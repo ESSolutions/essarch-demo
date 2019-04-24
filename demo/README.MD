@@ -1,0 +1,39 @@
+# Demo dockers
+
+## Pre-requisites
+
+- docker
+- docker-compose
+
+## Quick start
+
+Run the following command to start all services in background:
+
+`docker-compose run -d`
+
+Fetching the logs:
+
+`docker-compose logs -f`
+
+Cleanup after demoing:
+
+`docker-compose down`
+
+
+## Changing the GNU/Linux distribution
+
+The application containers and celery containers can be configured to use docker image based on different GNU/Linux distributions.
+This is done by pointing to the folder where the Dockerfile resides.
+
+```
+
+demo/epp/
+├── centos7               <──── choose this
+│   └── Dockerfile
+├── runtime_config.sh
+└── ubuntu18              <──── or this
+    └── Dockerfile
+
+```
+
+Change the environment variable `APP_DIST` to either `centos7` or `ubuntu18` in the `.env` file.
