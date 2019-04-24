@@ -1,0 +1,322 @@
+version: '3.3'
+
+services:
+
+  ###### EPP #######
+  epp_app:
+    build:
+      context: ../
+      dockerfile: demo/epp/${APP_DIST:-centos7}/Dockerfile
+    environment:
+      DB_HOST: epp_db
+      DB_PORT: 5432
+      REDIS_HOST: epp_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: epp_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    ports:
+      - 8000:8000
+    depends_on:
+      - epp_db
+      - epp_rabbitmq
+      - epp_redis
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  epp_celery:
+    build:
+      context: ../
+      dockerfile: demo/epp/${APP_DIST:-centos7}/Dockerfile
+    command:
+      - /bin/bash
+      - -c
+      - |
+        celery -A config beat --loglevel=info
+    environment:
+      DB_HOST: epp_db
+      DB_PORT: 5432
+      REDIS_HOST: epp_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: epp_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    depends_on:
+      - epp_db
+      - epp_redis
+      - epp_rabbitmq
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  epp_db:
+    image: "postgres:$POSTGRES_VERSION"
+    environment:
+      POSTGRES_DB: epp
+      POSTGRES_USER: arkiv
+      POSTGRES_PASSWORD: password
+    ports:
+      - 3003:5432
+    networks:
+      - ess
+
+  epp_rabbitmq:
+    image: "rabbitmq:$RABBITMQ_VERSION"
+    ports:
+      - 15003:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    networks:
+      - ess
+
+  epp_redis:
+    image: "redis:$REDIS_VERSION"
+    ports:
+      - 6003:6379
+    networks:
+      - ess
+
+
+  ###### ETA #######
+  eta_app:
+    build:
+      context: ../
+      dockerfile: demo/eta/${APP_DIST:-centos7}/Dockerfile
+    environment:
+      DB_HOST: eta_db
+      DB_PORT: 5432
+      REDIS_HOST: eta_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: eta_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    ports:
+      - 8002:8000
+    depends_on:
+      - eta_db
+      - eta_rabbitmq
+      - eta_redis
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  eta_celery:
+    build:
+      context: ../
+      dockerfile: demo/eta/${APP_DIST:-centos7}/Dockerfile
+    command:
+      - /bin/bash
+      - -c
+      - |
+        celery -A config worker --loglevel=info --concurrency=5 -Ofair -Q celery,validation,file_operation,pollers
+    environment:
+      DB_HOST: eta_db
+      DB_PORT: 5432
+      REDIS_HOST: eta_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: eta_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    depends_on:
+      - eta_db
+      - eta_redis
+      - eta_rabbitmq
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  eta_db:
+    image: "postgres:$POSTGRES_VERSION"
+    ports:
+      - 3002:5432
+    environment:
+      POSTGRES_DB: eta
+      POSTGRES_USER: arkiv
+      POSTGRES_PASSWORD: password
+    networks:
+      - ess
+
+  eta_rabbitmq:
+    image: "rabbitmq:$RABBITMQ_VERSION"
+    ports:
+      - 15002:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    networks:
+      - ess
+
+  eta_redis:
+    image: "redis:$REDIS_VERSION"
+    ports:
+      - 6002:6379
+    networks:
+      - ess
+
+
+  ###### ETP #######
+  etp_app:
+    build:
+      context: ../
+      dockerfile: demo/etp/${APP_DIST:-centos7}/Dockerfile
+    environment:
+      DB_HOST: etp_db
+      DB_PORT: 5432
+      REDIS_HOST: etp_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: etp_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    ports:
+      - 8001:8000
+    depends_on:
+      - etp_db
+      - etp_rabbitmq
+      - etp_redis
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  etp_celery:
+    build:
+      context: ../
+      dockerfile: demo/etp/${APP_DIST:-centos7}/Dockerfile
+    command:
+      - /bin/bash
+      - -c
+      - |
+        celery -A config worker --loglevel=info --concurrency=5 -Ofair -Q celery,validation,file_operation,pollers
+    environment:
+      DB_HOST: etp_db
+      DB_PORT: 5432
+      REDIS_HOST: etp_redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: etp_rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    depends_on:
+      - etp_db
+      - etp_redis
+      - etp_rabbitmq
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  etp_db:
+    image: "postgres:$POSTGRES_VERSION"
+    ports:
+      - 3001:5432
+    environment:
+      POSTGRES_DB: etp
+      POSTGRES_USER: arkiv
+      POSTGRES_PASSWORD: password
+    networks:
+      - ess
+
+  etp_rabbitmq:
+    image: "rabbitmq:$RABBITMQ_VERSION"
+    ports:
+      - 15001:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    networks:
+      - ess
+
+  etp_redis:
+    image: "redis:$REDIS_VERSION"
+    ports:
+      - 6001:6379
+    networks:
+      - ess
+
+
+  ###### ELK Stack #######
+  elasticsearch:
+    build:
+      context: ../dockerfiles/elasticsearch
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../dockerfiles/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - ess
+
+  logstash:
+    build:
+      context: ../dockerfiles/logstash
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../dockerfiles/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ../dockerfiles/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    networks:
+      - ess
+
+  kibana:
+    build:
+      context: ../dockerfiles/kibana
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ../dockerfiles/kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - ess
+
+networks:
+  ess:
+    driver: bridge
