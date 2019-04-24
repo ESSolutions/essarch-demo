@@ -24,8 +24,9 @@ WORKDIR $ETP_ROOT
 RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Producer.git --depth=1 $ETP_ROOT
 RUN git clone https://github.com/ESSolutions/ESSArch_Core.git --depth=1 $EC
 
-ADD . /src/ess_configs/
+ADD demo/etp/bootstrap.sh .
+RUN ./bootstrap.sh
 
-RUN $ESS_CONFIGS/demo/etp/bootstrap.sh
+ADD . /src/ess_configs/
 
 CMD /bin/bash -c "$ESS_CONFIGS/demo/etp/runtime_config.sh && python ESSArch_TP/manage.py runserver 0.0.0.0:8000"

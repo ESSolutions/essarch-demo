@@ -10,9 +10,9 @@ services:
     environment:
       DB_HOST: epp_db
       DB_PORT: 5432
-      REDIS_HOST: epp_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: epp_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -24,8 +24,8 @@ services:
       - 8000:8000
     depends_on:
       - epp_db
-      - epp_rabbitmq
-      - epp_redis
+      - rabbitmq
+      - redis
       - elasticsearch
       - logstash
     networks:
@@ -43,9 +43,9 @@ services:
     environment:
       DB_HOST: epp_db
       DB_PORT: 5432
-      REDIS_HOST: epp_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: epp_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -55,8 +55,8 @@ services:
       - $ESS_CONFIGS:/src/ess_configs:ro
     depends_on:
       - epp_db
-      - epp_redis
-      - epp_rabbitmq
+      - redis
+      - rabbitmq
       - elasticsearch
       - logstash
     networks:
@@ -73,23 +73,6 @@ services:
     networks:
       - ess
 
-  epp_rabbitmq:
-    image: "rabbitmq:$RABBITMQ_VERSION"
-    ports:
-      - 15003:5672
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitmq
-      - RABBITMQ_DEFAULT_PASS=rabbitmq
-    networks:
-      - ess
-
-  epp_redis:
-    image: "redis:$REDIS_VERSION"
-    ports:
-      - 6003:6379
-    networks:
-      - ess
-
 
   ###### ETA #######
   eta_app:
@@ -99,9 +82,9 @@ services:
     environment:
       DB_HOST: eta_db
       DB_PORT: 5432
-      REDIS_HOST: eta_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: eta_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -113,8 +96,8 @@ services:
       - 8002:8000
     depends_on:
       - eta_db
-      - eta_rabbitmq
-      - eta_redis
+      - rabbitmq
+      - redis
       - elasticsearch
       - logstash
     networks:
@@ -132,9 +115,9 @@ services:
     environment:
       DB_HOST: eta_db
       DB_PORT: 5432
-      REDIS_HOST: eta_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: eta_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -144,8 +127,8 @@ services:
       - $ESS_CONFIGS:/src/ess_configs:ro
     depends_on:
       - eta_db
-      - eta_redis
-      - eta_rabbitmq
+      - redis
+      - rabbitmq
       - elasticsearch
       - logstash
     networks:
@@ -162,23 +145,6 @@ services:
     networks:
       - ess
 
-  eta_rabbitmq:
-    image: "rabbitmq:$RABBITMQ_VERSION"
-    ports:
-      - 15002:5672
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitmq
-      - RABBITMQ_DEFAULT_PASS=rabbitmq
-    networks:
-      - ess
-
-  eta_redis:
-    image: "redis:$REDIS_VERSION"
-    ports:
-      - 6002:6379
-    networks:
-      - ess
-
 
   ###### ETP #######
   etp_app:
@@ -188,9 +154,9 @@ services:
     environment:
       DB_HOST: etp_db
       DB_PORT: 5432
-      REDIS_HOST: etp_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: etp_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -202,8 +168,8 @@ services:
       - 8001:8000
     depends_on:
       - etp_db
-      - etp_rabbitmq
-      - etp_redis
+      - rabbitmq
+      - redis
       - elasticsearch
       - logstash
     networks:
@@ -221,9 +187,9 @@ services:
     environment:
       DB_HOST: etp_db
       DB_PORT: 5432
-      REDIS_HOST: etp_redis
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-      RABBITMQ_HOST: etp_rabbitmq
+      RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       ELASTICSEARCH_HOST: elasticsearch
       ELASTICSEARCH_PORT: 9200
@@ -233,8 +199,8 @@ services:
       - $ESS_CONFIGS:/src/ess_configs:ro
     depends_on:
       - etp_db
-      - etp_redis
-      - etp_rabbitmq
+      - redis
+      - rabbitmq
       - elasticsearch
       - logstash
     networks:
@@ -251,20 +217,25 @@ services:
     networks:
       - ess
 
-  etp_rabbitmq:
-    image: "rabbitmq:$RABBITMQ_VERSION"
+
+  ###### Shared services ######
+  redis:
+    image: "redis:$REDIS_VERSION"
     ports:
-      - 15001:5672
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitmq
-      - RABBITMQ_DEFAULT_PASS=rabbitmq
+      - 6379:6379
     networks:
       - ess
 
-  etp_redis:
-    image: "redis:$REDIS_VERSION"
+  rabbitmq:
+    image: "rabbitmq:$RABBITMQ_VERSION"
     ports:
-      - 6001:6379
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    volumes:
+      - $ESS_CONFIGS/dockerfiles/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - ess
 

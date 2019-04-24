@@ -8,8 +8,10 @@ LOGSTASH_HOST = os.environ.get('LOGSTASH_HOST', 'localhost')
 LOGSTASH_PORT = os.environ.get('LOGSTASH_PORT', '5002')
 REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
 REDIS_PORT = os.environ.get('REDIS_PORT', '6002')
+REDIS_CONTEXT = os.environ.get('REDIS_CONTEXT', '/2')
 RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'localhost')
 RABBITMQ_PORT = os.environ.get('RABBITMQ_PORT', '15002')
+RABBITMQ_CONTEXT = os.environ.get('RABBITMQ_CONTEXT', '/eta')
 
 DATABASES = {
     'default': {
@@ -143,7 +145,7 @@ LOGGING = {
     },
 }
 
-REDIS_ADDR = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+REDIS_ADDR = f'redis://{REDIS_HOST}:{REDIS_PORT}{REDIS_CONTEXT}'
 
 CHANNEL_LAYERS = {
     "default": {
@@ -165,5 +167,5 @@ CACHES = {
     }
 }
 
-RABBITMQ_URL = f'amqp://rabbitmq:rabbitmq@{RABBITMQ_HOST}:{RABBITMQ_PORT}'
+RABBITMQ_URL = f'amqp://rabbitmq:rabbitmq@{RABBITMQ_HOST}:{RABBITMQ_PORT}{RABBITMQ_CONTEXT}'
 CELERY_RESULT_BACKEND = REDIS_ADDR

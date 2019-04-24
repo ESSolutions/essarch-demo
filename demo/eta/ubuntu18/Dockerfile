@@ -21,8 +21,9 @@ WORKDIR $ETA_ROOT
 RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Archive.git --depth=1 $ETA_ROOT
 RUN git clone https://github.com/ESSolutions/ESSArch_Core.git --depth=1 $EC
 
-ADD . /src/ess_configs/
+ADD demo/eta/bootstrap.sh .
+RUN ./bootstrap.sh
 
-RUN $ESS_CONFIGS/demo/eta/bootstrap.sh
+ADD . /src/ess_configs/
 
 CMD /bin/bash -c "$ESS_CONFIGS/demo/eta/runtime_config.sh && python ESSArch_TA/manage.py runserver 0.0.0.0:8000"
