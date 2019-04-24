@@ -21,16 +21,11 @@ EXPOSE 8000
 
 WORKDIR $ETP_ROOT
 
-RUN mkdir -p /ESSArch/log/
-
-RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Producer.git $ETP_ROOT
-RUN git clone https://github.com/ESSolutions/ESSArch_Core.git $EC
-
-RUN ln -fs /usr/bin/python3.6 /usr/bin/python
-RUN python -m pip install --upgrade pip
-RUN python -m pip install -e ${EC}/["tests,s3,postgres,mysql,logstash"]
-RUN cd ${ETP}/frontend/static/frontend && yarn && gulp
+RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Producer.git --depth=1 $ETP_ROOT
+RUN git clone https://github.com/ESSolutions/ESSArch_Core.git --depth=1 $EC
 
 ADD . /src/ess_configs/
+
+RUN $ESS_CONFIGS/demo/etp/bootstrap.sh
 
 CMD /bin/bash -c "$ESS_CONFIGS/demo/etp/runtime_config.sh && python ESSArch_TP/manage.py runserver 0.0.0.0:8000"

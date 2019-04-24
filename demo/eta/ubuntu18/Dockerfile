@@ -18,16 +18,11 @@ EXPOSE 8000
 
 WORKDIR $ETA_ROOT
 
-RUN mkdir -p /ESSArch/log/
-
-RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Archive.git $ETA_ROOT
-RUN git clone https://github.com/ESSolutions/ESSArch_Core.git $EC
-
-RUN ln -fs /usr/bin/python3.6 /usr/bin/python
-RUN python -m pip install --upgrade pip
-RUN python -m pip install -e ${EC}/["tests,s3,postgres,mysql,mariadb,logstash"]
-RUN cd ${ETA}/frontend/static/frontend && yarn && gulp
+RUN git clone https://github.com/ESSolutions/ESSArch_Tools_Archive.git --depth=1 $ETA_ROOT
+RUN git clone https://github.com/ESSolutions/ESSArch_Core.git --depth=1 $EC
 
 ADD . /src/ess_configs/
+
+RUN $ESS_CONFIGS/demo/eta/bootstrap.sh
 
 CMD /bin/bash -c "$ESS_CONFIGS/demo/eta/runtime_config.sh && python ESSArch_TA/manage.py runserver 0.0.0.0:8000"
