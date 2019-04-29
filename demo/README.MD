@@ -9,7 +9,7 @@
 
 Run the following command to start all services in background:
 
-`docker-compose run -d`
+`docker-compose up -d`
 
 Fetching the logs:
 
@@ -37,3 +37,8 @@ demo/epp/
 ```
 
 Change the environment variable `APP_DIST` to either `centos7` or `ubuntu18` in the `.env` file.
+You can also pass the variable like this:
+
+```bash
+APP_DIST=ubuntu18 docker-compose up -d
+```
