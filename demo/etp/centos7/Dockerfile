@@ -5,7 +5,7 @@ RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum
 
 RUN yum install https://centos7.iuscommunity.org/ius-release.rpm -y \
     && yum update -y \
-    && yum install -y git nodejs yarn mariadb-devel gcc cairo pango python36u python36u-devel python36u-pip bzip2 \
+    && yum install -y git nodejs yarn gcc cairo pango python36u python36u-devel python36u-pip bzip2 \
     && yum clean all
 RUN yarn global add gulp
 

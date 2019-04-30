@@ -17,8 +17,8 @@ mkdir -p /ESSArch/log/ \
          /ESSArch/data/epp/reports/conversion
 
 ln -fs /usr/bin/python3.6 /usr/bin/python
-python -m pip install --upgrade pip
-python -m pip install -e ${EC}/["tests,s3,postgres,mysql,logstash"]
+python -m pip install --upgrade pip setuptools
+python -m pip install -e ${EC}/["tests,s3,postgres,logstash"]
 cd ${EPP}/frontend/static/frontend && yarn && gulp
 
 set +e

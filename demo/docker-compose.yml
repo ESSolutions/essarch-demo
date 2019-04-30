@@ -21,7 +21,7 @@ services:
     volumes:
       - $ESS_CONFIGS:/src/ess_configs:ro
     ports:
-      - 8000:8000
+      - 8002:8000
     depends_on:
       - epp_db
       - rabbitmq
@@ -93,7 +93,7 @@ services:
     volumes:
       - $ESS_CONFIGS:/src/ess_configs:ro
     ports:
-      - 8002:8000
+      - 8001:8000
     depends_on:
       - eta_db
       - rabbitmq
@@ -165,7 +165,7 @@ services:
     volumes:
       - $ESS_CONFIGS:/src/ess_configs:ro
     ports:
-      - 8001:8000
+      - 8000:8000
     depends_on:
       - etp_db
       - rabbitmq
