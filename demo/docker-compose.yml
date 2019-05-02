@@ -31,7 +31,7 @@ services:
     networks:
       - ess
 
-  epp_celery:
+  epp_celery_beat:
     build:
       context: ../
       dockerfile: demo/epp/${APP_DIST:-centos7}/Dockerfile
@@ -40,6 +40,37 @@ services:
       - -c
       - |
         celery -A config beat --loglevel=info
+    environment:
+      DB_HOST: epp_db
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      LOGSTASH_HOST: logstash
+      LOGSTASH_PORT: 5000
+    volumes:
+      - $ESS_CONFIGS:/src/ess_configs:ro
+    depends_on:
+      - epp_db
+      - redis
+      - rabbitmq
+      - elasticsearch
+      - logstash
+    networks:
+      - ess
+
+  epp_celery_worker:
+    build:
+      context: ../
+      dockerfile: demo/epp/${APP_DIST:-centos7}/Dockerfile
+    command:
+      - /bin/bash
+      - -c
+      - |
+        celery -A config worker --loglevel=info --concurrency=5 -Ofair -Q celery,validation,file_operation,pollers
     environment:
       DB_HOST: epp_db
       DB_PORT: 5432
@@ -103,7 +134,7 @@ services:
     networks:
       - ess
 
-  eta_celery:
+  eta_celery_worker:
     build:
       context: ../
       dockerfile: demo/eta/${APP_DIST:-centos7}/Dockerfile
@@ -175,7 +206,7 @@ services:
     networks:
       - ess
 
-  etp_celery:
+  etp_celery_worker:
     build:
       context: ../
       dockerfile: demo/etp/${APP_DIST:-centos7}/Dockerfile
