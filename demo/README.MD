@@ -26,13 +26,15 @@ The application containers and celery containers can be configured to use docker
 This is done by pointing to the folder where the Dockerfile resides.
 
 ```
-
 demo/epp/
 ├── centos7               <──── choose this
 │   └── Dockerfile
-├── runtime_config.sh
-└── ubuntu18              <──── or this
-    └── Dockerfile
+├── fedora                <──── or this
+│   └── Dockerfile
+├── ubuntu18              <──── or this
+│   └── Dockerfile
+├── bootstrap.sh
+└── runtime_config.sh
 
 ```
 
