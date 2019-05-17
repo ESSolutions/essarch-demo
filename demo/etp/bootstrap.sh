@@ -4,12 +4,6 @@ start_time=`date +%s`
 
 set -e
 
-mkdir -p /ESSArch/log/ \
-         /ESSArch/etp/env \
-         /ESSArch/data/etp/prepare \
-         /ESSArch/data/etp/prepare_reception \
-         /ESSArch/data/eta/reception/eft
-
 ln -fs /usr/bin/python3.6 /usr/bin/python
 python -m pip install --upgrade pip setuptools
 python -m pip install -e ${EC}/["tests,s3,postgres,logstash"]

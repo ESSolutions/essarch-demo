@@ -8,6 +8,18 @@ start_time=`date +%s`
 
 set -e
 
+mkdir -p /ESSArch/log/ \
+         /ESSArch/data/gate/reception \
+         /ESSArch/data/epp/ingest \
+         /ESSArch/data/epp/cache \
+         /ESSArch/data/epp/work \
+         /ESSArch/data/epp/disseminations \
+         /ESSArch/data/epp/orders \
+         /ESSArch/data/epp/verify \
+         /ESSArch/data/epp/temp \
+         /ESSArch/data/epp/reports/appraisal \
+         /ESSArch/data/epp/reports/conversion
+
 python ESSArch_PP/manage.py migrate
 python ${EC}/ESSArch_Core/install/install_default_config.py
 python ESSArch_PP/install/install_default_config_epp.py

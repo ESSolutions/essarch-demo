@@ -9,7 +9,11 @@
 
 Run the following command to start all services in background:
 
-`docker-compose up -d`
+    docker-compose up -d
+    
+    or
+    
+    docker-compose up -d --build        #To rebuild all images
 
 Fetching the logs:
 

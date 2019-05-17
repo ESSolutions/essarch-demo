@@ -8,6 +8,12 @@ start_time=`date +%s`
 
 set -e
 
+mkdir -p /ESSArch/log/ \
+         /ESSArch/etp/env \
+         /ESSArch/data/etp/prepare \
+         /ESSArch/data/etp/prepare_reception \
+         /ESSArch/data/eta/reception/eft
+
 python ESSArch_TP/manage.py migrate
 python ${EC}/ESSArch_Core/install/install_default_config.py
 python ESSArch_TP/install/install_default_config_etp.py
