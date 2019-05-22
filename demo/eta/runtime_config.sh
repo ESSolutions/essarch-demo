@@ -9,10 +9,10 @@ start_time=`date +%s`
 set -e
 
 mkdir -p /ESSArch/log/ \
-         /ESSArch/etp/env \
+         /ESSArch/eta/env \
          /ESSArch/data/gate/reception \
-         /ESSArch/data/etp/prepare \
-         /ESSArch/data/etp/reception \
+         /ESSArch/data/eta/prepare \
+         /ESSArch/data/eta/reception \
          /ESSArch/data/eta/reception/eft \
          /ESSArch/data/eta/uip \
          /ESSArch/data/eta/work
